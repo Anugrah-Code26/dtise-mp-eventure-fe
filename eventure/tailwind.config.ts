@@ -11,6 +11,9 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        eventureMainBg: "#152955",
+        eventureMainBg2: "#1d3976",
+        eventureBgWhite: "#fbfbfb",
       },
     },
   },
