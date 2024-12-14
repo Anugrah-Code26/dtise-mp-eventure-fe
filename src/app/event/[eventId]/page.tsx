@@ -1,15 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getEventById, GetEventResponseDTO } from "@/api/getEvents";
-import { getTickets } from "@/api/getTIckets";
+import getTickets from "@/api/getTickets";
+import { getVouchers } from "@/api/getVouchers";
 import { TicketResponse } from "@/types/ticket";
+import { VoucherResponse } from "@/types/voucher";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DescriptionFormating from "@/components/Common/DescriptionFormating";
-import TicketList from "@/components/Event/TicketList";
+import TicketList from "@/components/Ticket/TicketList";
+import VoucherList from "@/components/Voucher/VoucherList";
 import {
   FaCalendarAlt,
   FaClock,
@@ -17,15 +20,23 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 import formatDateRange from "@/utils/common/formatDateRange";
+import { EventProvider, useEvent } from "@/context/EventContext";
 
-const EventPage: React.FC = () => {
+const EventPageContent: React.FC = () => {
   const { eventId } = useParams();
+  const { setEventId } = useEvent();
   const [activeTab, setActiveTab] = useState("desc");
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    setEventId(Number(eventId));
+  }, [eventId, setEventId]);
 
   const {
     data: event,
-    error,
-    isLoading,
+    error: eventError,
+    isLoading: eventLoading,
   } = useQuery<GetEventResponseDTO, Error>({
     queryKey: ["event", eventId],
     queryFn: () => getEventById(Number(eventId)),
@@ -42,11 +53,27 @@ const EventPage: React.FC = () => {
     enabled: !!eventId,
   });
 
-  if (isLoading || ticketsLoading) return <div>Loading...</div>;
-  if (error || ticketsError)
-    return <div>{error?.message || ticketsError?.message}</div>;
-  if (!event || !ticketsResponse || !ticketsResponse.success)
-    return <div>No event or tickets found</div>;
+  const {
+    data: vouchersResponse,
+    error: vouchersError,
+    isLoading: vouchersLoading,
+  } = useQuery<VoucherResponse, Error>({
+    queryKey: ["vouchers", eventId],
+    queryFn: () => getVouchers(Number(eventId)),
+    enabled: !!eventId,
+  });
+
+  if (eventLoading || ticketsLoading || vouchersLoading)
+    return <div>Loading...</div>;
+
+  if (eventError || ticketsError || vouchersError)
+    return (
+      <div>
+        {eventError?.message || ticketsError?.message || vouchersError?.message}
+      </div>
+    );
+
+  if (!event) return <div>No event found</div>;
 
   const { formattedDateRange, formattedTimeRange } = formatDateRange(
     event.startedAt,
@@ -69,24 +96,22 @@ const EventPage: React.FC = () => {
 
           <div className="flex justify-center border-b">
             <button
-              className={`py-2 px-4 font-semibold ${
-                activeTab === "desc"
-                  ? "border-b-2 border-blue-600 text-blue-600"
-                  : "text-gray-600"
-              }`}
+              className={`py-2 px-4 font-semibold ${activeTab === "desc" ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-600"}`}
               onClick={() => setActiveTab("desc")}
             >
               Description
             </button>
             <button
-              className={`py-2 px-4 font-semibold ${
-                activeTab === "ticket"
-                  ? "border-b-2 border-blue-600 text-blue-600"
-                  : "text-gray-600"
-              }`}
+              className={`py-2 px-4 font-semibold ${activeTab === "ticket" ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-600"}`}
               onClick={() => setActiveTab("ticket")}
             >
               Ticket
+            </button>
+            <button
+              className={`py-2 px-4 font-semibold ${activeTab === "voucher" ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-600"}`}
+              onClick={() => setActiveTab("voucher")}
+            >
+              Voucher
             </button>
           </div>
 
@@ -96,10 +121,13 @@ const EventPage: React.FC = () => {
                 description={event.description}
               ></DescriptionFormating>
             )}
-
-            {activeTab === "ticket" && (
-              <TicketList tickets={ticketsResponse.data} />
-            )}
+            {activeTab === "ticket" &&
+              isClient &&
+              (ticketsResponse && ticketsResponse.success ? (
+                <TicketList tickets={ticketsResponse.data} />
+              ) : (
+                <div>No tickets available</div>
+              ))}
           </div>
         </div>
 
@@ -135,10 +163,7 @@ const EventPage: React.FC = () => {
                     className="w-full h-auto object-cover"
                   />
                 ) : (
-                  <FaUserCircle
-                    size={20}
-                    className="text-gray-50"
-                  ></FaUserCircle>
+                  <FaUserCircle size={20} className="text-gray-50" />
                 )}
               </div>
 
@@ -150,23 +175,25 @@ const EventPage: React.FC = () => {
               </p>
             </div>
           </div>
-
-          <div className="bg-white shadow-lg rounded-lg p-6">
-            <div className="text-sm text-gray-600 mb-2">Starting price</div>
-            <div className="text-xl font-bold text-gray-800 mb-4">
-              {event.startingPrice
-                ? `Rp${event.startingPrice.toLocaleString()}`
-                : "Free"}
-            </div>
-
-            <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-              Buy Ticket
-            </button>
-          </div>
+          {activeTab === "voucher" &&
+            isClient &&
+            (vouchersResponse && vouchersResponse.success ? (
+              <VoucherList vouchers={vouchersResponse.data} />
+            ) : (
+              <></>
+            ))}
         </div>
       </div>
       <Footer />
     </>
+  );
+};
+
+const EventPage: React.FC = () => {
+  return (
+    <EventProvider>
+      <EventPageContent />
+    </EventProvider>
   );
 };
 

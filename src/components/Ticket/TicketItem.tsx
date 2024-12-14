@@ -27,7 +27,7 @@ const TicketItem: React.FC<TicketItemProps> = ({ ticket }) => {
       <div className="flex-grow">
         <h2 className="text-xl font-bold text-gray-800">{ticket.ticketName}</h2>
         <p className="text-gray-600">{ticket.description}</p>
-        <p className="text-gray-600">Price: ${ticket.price.toFixed(2)}</p>
+        <p className="text-gray-600">Price: RP.{ticket.price.toFixed(2)}</p>
         <p className="text-gray-600">Available: {ticket.totalAvailable}</p>
       </div>
       <div className="flex items-center">

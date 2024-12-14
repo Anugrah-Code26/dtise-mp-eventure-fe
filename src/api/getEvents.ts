@@ -1,8 +1,6 @@
 import axios from "axios";
 import { ApiResponse } from "@/types/response";
 
-const API_URL = "http://localhost:8080/api/v1";
-
 interface EventSearch {
   eventId: number;
   organizerId: number;
@@ -35,7 +33,7 @@ export const getEvents = async (
   cityId?: number
 ): Promise<PaginationInfo<EventSearch>> => {
   const response = await axios.get<ApiResponse<PaginationInfo<EventSearch>>>(
-    `${API_URL}/event`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/event`,
     {
       params: {
         limit,
@@ -51,7 +49,7 @@ export const getEvents = async (
 export const getEventsByName = async (query: string): Promise<Event[]> => {
   try {
     const response = await axios.get<ApiResponse<Event[]>>(
-      `${API_URL}/event/search-by-name`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/event/search-by-name`,
       {
         params: {
           query,
@@ -89,7 +87,7 @@ export const getEventById = async (
 ): Promise<GetEventResponseDTO> => {
   try {
     const response = await axios.get<ApiResponse<GetEventResponseDTO>>(
-      `${API_URL}/event/${id}`
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/event/${id}`
     );
     return response.data.data;
   } catch (error) {
