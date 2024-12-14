@@ -1,4 +1,5 @@
 import axios from "axios";
+import { ApiResponse } from "@/types/response";
 
 const API_URL = "http://localhost:8080/api/v1";
 
@@ -18,13 +19,6 @@ interface Event {
   eventName: string;
 }
 
-interface EventResponse {
-  statusCode: number;
-  message: string;
-  success: boolean;
-  data: Event[];
-}
-
 interface PaginationInfo<T> {
   currentPage: number;
   totalPages: number;
@@ -40,20 +34,23 @@ export const getEvents = async (
   eventCategoryId?: number,
   cityId?: number
 ): Promise<PaginationInfo<EventSearch>> => {
-  const response = await axios.get(`${API_URL}/event`, {
-    params: {
-      limit,
-      page,
-      eventCategoryId,
-      cityId,
-    },
-  });
+  const response = await axios.get<ApiResponse<PaginationInfo<EventSearch>>>(
+    `${API_URL}/event`,
+    {
+      params: {
+        limit,
+        page,
+        eventCategoryId,
+        cityId,
+      },
+    }
+  );
   return response.data.data;
 };
 
 export const getEventsByName = async (query: string): Promise<Event[]> => {
   try {
-    const response = await axios.get<EventResponse>(
+    const response = await axios.get<ApiResponse<Event[]>>(
       `${API_URL}/event/search-by-name`,
       {
         params: {
@@ -65,5 +62,38 @@ export const getEventsByName = async (query: string): Promise<Event[]> => {
   } catch (error) {
     console.error("Error fetching events by name:", error);
     return [];
+  }
+};
+
+export interface GetEventResponseDTO {
+  eventId: number;
+  organizerName: string;
+  organizerProfilePicture: string;
+  name: string;
+  description: string;
+  thumbnail: string;
+  eventCategoryName: string;
+  cityName: string;
+  locationDetail: string;
+  longitude: number;
+  latitude: number;
+  startedAt: string;
+  endedAt: string;
+  startingPrice: number;
+  totalCapacity: number;
+  totalAvailable: number;
+}
+
+export const getEventById = async (
+  id: number
+): Promise<GetEventResponseDTO> => {
+  try {
+    const response = await axios.get<ApiResponse<GetEventResponseDTO>>(
+      `${API_URL}/event/${id}`
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching event by ID:", error);
+    throw error;
   }
 };

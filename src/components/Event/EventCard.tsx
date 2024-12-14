@@ -25,10 +25,6 @@ const EventCard: FC<EventCardProps> = ({
     month: "short",
     day: "2-digit",
     year: "2-digit",
-  })} at ${new Date(date).toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
   })}`;
 
   return (

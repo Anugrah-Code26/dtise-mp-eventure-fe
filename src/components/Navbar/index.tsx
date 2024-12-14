@@ -32,6 +32,7 @@ const Navbar: FC = () => {
         <Link href="/">
           <div className="text-3xl">Eventure</div>
         </Link>
+
         <SearchEvent eventId={eventId} setEventId={setEventId}></SearchEvent>
       </div>
 

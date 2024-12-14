@@ -1,7 +1,6 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import EventList from "@/components/Event/EventList";
-import Image from "next/image";
 
 export default function Home() {
   return (
