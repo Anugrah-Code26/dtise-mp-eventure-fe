@@ -105,7 +105,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           userId: user.userId,
         };
       }
-      
 
       // Handle access token expiration
       if (

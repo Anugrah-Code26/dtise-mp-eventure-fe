@@ -22,6 +22,8 @@ const Navbar: FC = () => {
     await signOut();
   };
 
+  // console.log("Session Data:", session);
+
   return (
     <header className="fixed z-50 flex w-full items-center justify-between bg-eventureMainBg px-8 py-4 md:px-56 md:py-2">
       {/* Logo and Search */}
@@ -46,7 +48,15 @@ const Navbar: FC = () => {
 
             {isSubmenuOpen && (
               <div className="absolute top-14 right-0 z-50 w-48 rounded-lg bg-white shadow-lg">
-                <div className="flex flex-col py-2">
+                <div className="flex flex-col py-2 items-center"> {/* Centering submenu items */}
+                  {/* Conditionally render "Register as Organizer" button */}
+                  {session?.user.roles.includes("USER") && (
+                    <Link href="/registerOrganizer">
+                      <button className="cursor-pointer px-4 py-2 text-sm text-blue-500 hover:bg-gray-100 mb-2">
+                        Register as Organizer
+                      </button>
+                    </Link>
+                  )}
                   {NavbarData[0].submenu.map((submenu, index) => (
                     <Link href={submenu.link} key={index}>
                       <div className="cursor-pointer px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -90,20 +100,30 @@ const Navbar: FC = () => {
       {/* Mobile Dropdown */}
       {isMobileMenuOpen && (
         <div className="absolute left-0 top-16 flex w-full flex-col gap-5 bg-white py-8 text-eventureMainBg shadow-lg md:hidden">
-          {NavbarData[0].submenu.map((submenu, index) => (
-            <Link href={submenu.link} key={index}>
-              <button className="px-8 text-left text-lg hover:bg-gray-100">
-                {submenu.title}
-              </button>
-            </Link>
-          ))}
           {session ? (
-            <button
-              onClick={handleLogout}
-              className="mx-8 text-left text-red-500 hover:bg-gray-100"
-            >
-              Logout
-            </button>
+            <>
+              {/* Conditionally render "Register as Organizer" button in mobile view */}
+              {session?.user.roles.includes("USER") && (
+                <Link href="/registerOrganizer">
+                  <button className="mx-8 text-center text-blue-500 hover:bg-gray-100 mb-2">
+                    Register as Organizer
+                  </button>
+                </Link>
+              )}
+              {NavbarData[0].submenu.map((submenu, index) => (
+                <Link href={submenu.link} key={index}>
+                  <button className="px-8 text-left text-lg hover:bg-gray-100">
+                    {submenu.title}
+                  </button>
+                </Link>
+              ))}
+              <button
+                onClick={handleLogout}
+                className="mx-8 text-left text-red-500 hover:bg-gray-100"
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <>
               <Link href="/login">

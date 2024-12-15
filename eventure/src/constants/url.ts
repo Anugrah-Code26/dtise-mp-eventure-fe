@@ -7,5 +7,7 @@ export const API_URL = {
   },
   user: {
     detail: "/api/v1/users",
+    register: "/api/v1/user/register",
+    organizer: "/api/v1/event-organizer"
   }
 };
