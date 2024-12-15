@@ -5,6 +5,10 @@ import Navbar from "@/components/Navbar";
 import EventList from "@/components/Event/EventList";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import EventCard from "@/components/EventCard";
+import PaginatedEvents from "@/components/PaginatedEvents";
 import { useEffect } from "react";
 
 export default function Home() {

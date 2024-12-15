@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import { ApiResponse } from "@/types/response";
 
 interface EventSearch {
@@ -16,6 +17,7 @@ interface Event {
   eventId: number;
   eventName: string;
 }
+
 
 interface PaginationInfo<T> {
   currentPage: number;
