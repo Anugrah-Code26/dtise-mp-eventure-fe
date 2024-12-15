@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getEventById, GetEventResponseDTO } from "@/api/getEvents";
-import getTickets from "@/api/getTickets";
+import getTickets from "@/api/getTIckets";
 import { getVouchers } from "@/api/getVouchers";
 import { TicketResponse } from "@/types/ticket";
 import { VoucherResponse } from "@/types/voucher";
