@@ -1,5 +1,8 @@
 "use client";
 
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+import EventList from "@/components/Event/EventList";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Navbar from "../components/Navbar";
@@ -19,10 +22,12 @@ export default function Home() {
   return (
     <>
       <Navbar></Navbar>
-      <div className="pt-16">
-        <PaginatedEvents></PaginatedEvents>
+      <div className="flex min-h-screen flex-col">
+        <div className="flex-grow pt-16">
+          <EventList />
+        </div>
+        <Footer></Footer>
       </div>
-      <Footer></Footer>
     </>
   );
 }

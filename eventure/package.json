@@ -1,5 +1,5 @@
 {
-  "name": "fezz4u-frontend",
+  "name": "eventure-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,18 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "axios": "^1.7.9",
-    "react-icons": "^5.4.0"
+    "@eslint/config-array": "^0.19.1",
+    "@eslint/object-schema": "^2.1.5",
     "@hookform/resolvers": "^3.9.1",
+    "@tanstack/react-query": "^5.62.7",
     "@types/jsonwebtoken": "^9.0.7",
+    "axios": "^1.7.9",
     "formik": "^2.4.6",
+    "glob": "^11.0.0",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
-    "next": "15.0.3",
+    "lru-cache": "^11.0.2",
+    "next": "^15.1.0",
     "next-auth": "^5.0.0-beta.25",
-    "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "react": "^18",
+    "react-dom": "^18",
     "react-hook-form": "^7.53.2",
+    "react-icons": "^5.4.0",
+    "rimraf": "^6.0.1",
     "yup": "^1.5.0",
     "zod": "^3.23.8"
   },
@@ -29,7 +35,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.20",
-    "eslint": "^8",
+    "eslint": "^9.17.0",
     "eslint-config-next": "15.0.3",
     "postcss": "^8.4.49",
     "prettier": "3.4.2",

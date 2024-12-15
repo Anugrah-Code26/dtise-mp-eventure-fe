@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import ReactQueryProvider from "@/utils/provider/ReactQueryProvider";
 import { auth } from "@/auth";
 
 const geistSans = localFont({
@@ -28,13 +29,15 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <html lang="en">
-      <SessionProvider refetchInterval={120} session={session}>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          {children}
-        </body>
-      </SessionProvider>
+      <ReactQueryProvider>
+        <SessionProvider refetchInterval={120} session={session}>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+            {children}
+          </body>
+        </SessionProvider>
+      </ReactQueryProvider>
     </html>
   );
 }

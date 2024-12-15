@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/v1";
+import { ApiResponse } from "@/types/response";
 
-interface Event {
+interface EventSearch {
   eventId: number;
   organizerId: number;
   organizer: string;
@@ -12,6 +12,12 @@ interface Event {
   startingPrice: number;
   startedAt: string;
 }
+
+interface Event {
+  eventId: number;
+  eventName: string;
+}
+
 
 interface PaginationInfo<T> {
   currentPage: number;
@@ -26,15 +32,68 @@ export const getEvents = async (
   limit: number,
   page: number,
   eventCategoryId?: number,
-  cityId?: number,
-): Promise<PaginationInfo<Event>> => {
-  const response = await axios.get(`${API_URL}/events`, {
-    params: {
-      limit,
-      page,
-      eventCategoryId,
-      cityId,
-    },
-  });
+  cityId?: number
+): Promise<PaginationInfo<EventSearch>> => {
+  const response = await axios.get<ApiResponse<PaginationInfo<EventSearch>>>(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/event`,
+    {
+      params: {
+        limit,
+        page,
+        eventCategoryId,
+        cityId,
+      },
+    }
+  );
   return response.data.data;
+};
+
+export const getEventsByName = async (query: string): Promise<Event[]> => {
+  try {
+    const response = await axios.get<ApiResponse<Event[]>>(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/event/search-by-name`,
+      {
+        params: {
+          query,
+        },
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching events by name:", error);
+    return [];
+  }
+};
+
+export interface GetEventResponseDTO {
+  eventId: number;
+  organizerName: string;
+  organizerProfilePicture: string;
+  name: string;
+  description: string;
+  thumbnail: string;
+  eventCategoryName: string;
+  cityName: string;
+  locationDetail: string;
+  longitude: number;
+  latitude: number;
+  startedAt: string;
+  endedAt: string;
+  startingPrice: number;
+  totalCapacity: number;
+  totalAvailable: number;
+}
+
+export const getEventById = async (
+  id: number
+): Promise<GetEventResponseDTO> => {
+  try {
+    const response = await axios.get<ApiResponse<GetEventResponseDTO>>(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/event/${id}`
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching event by ID:", error);
+    throw error;
+  }
 };
